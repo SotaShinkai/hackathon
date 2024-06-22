@@ -8,7 +8,7 @@ import (
 
 func main() {
 	service.InitDatabase()
-	http.HandleFunc("/tweet", controller.handler)
+	http.HandleFunc("/tweets", controller.Handler)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
