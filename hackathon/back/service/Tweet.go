@@ -10,7 +10,7 @@ import (
 type TweetService struct{}
 
 func (TweetService) PostTweet(id ulid.ULID, tweet model.TweetNoId) error {
-	_, err := db.Exec("INSERT INTO tweet VALUES (?, ?, ?, ?)", id.String(), tweet.UserName, tweet.UserId, tweet.Content)
+	_, err := db.Exec("INSERT INTO tweet VALUES (?, ?, ?, ?, ?, ?)", id.String(), tweet.UserName, tweet.UserId, tweet.Content, 0, tweet.ReplyId)
 	if err != nil {
 		log.Println("Error inserting tweet", err)
 		return err
@@ -27,7 +27,7 @@ func (TweetService) GetTweet() []model.Tweet {
 	tweets := make([]model.Tweet, 0)
 	for rows.Next() {
 		var tweet model.Tweet
-		if err := rows.Scan(&tweet.Id, &tweet.UserName, &tweet.UserId, &tweet.Content); err != nil {
+		if err := rows.Scan(&tweet.Id, &tweet.UserName, &tweet.UserId, &tweet.Content, &tweet.Fav, &tweet.ReplyId); err != nil {
 			log.Println("Error getting tweet", err)
 			if err := rows.Close(); err != nil {
 				log.Println("Error closing tweet", err)
@@ -45,5 +45,23 @@ func (TweetService) DeleteTweet(id model.Id) error {
 		log.Println("Error deleting tweet", err)
 		return err
 	}
+	return nil
+}
+
+func (TweetService) FavTweet(Fav model.IsFavedTweet) error {
+	if Fav.IsFaved == false {
+		_, err := db.Exec("UPDATE tweet SET fav=fav+1 WHERE id = ?", Fav.Id)
+		if err != nil {
+			log.Println("Error updating tweet", err)
+			return err
+		}
+	} else {
+		_, err := db.Exec("UPDATE tweet SET fav=fav-1 WHERE id = ?", Fav.Id)
+		if err != nil {
+			log.Println("Error updating tweet", err)
+			return err
+		}
+	}
+
 	return nil
 }

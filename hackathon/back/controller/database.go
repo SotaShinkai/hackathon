@@ -59,9 +59,26 @@ func TweetDelete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func TweetFav(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	isFaved := model.IsFavedTweet{}
+	if err := decoder.Decode(&isFaved); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	tweetService := service.TweetService{}
+	err := tweetService.FavTweet(isFaved)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	switch r.Method {
 	case http.MethodGet:
@@ -70,6 +87,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		TweetAdd(w, r)
 	case http.MethodDelete:
 		TweetDelete(w, r)
+	case http.MethodPut:
+		TweetFav(w, r)
 	default:
 		w.WriteHeader(http.StatusOK)
 		return
