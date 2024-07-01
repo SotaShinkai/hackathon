@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"github.com/oklog/ulid"
+	"log"
 	"net/http"
 )
 
@@ -19,6 +20,7 @@ func TweetAdd(w http.ResponseWriter, r *http.Request) {
 	}
 	id := ulid.MustNew(ulid.Now(), rand.Reader)
 
+	log.Println("tweetNoId.ReplyId:", tweetNoId.ReplyId)
 	tweetService := service.TweetService{}
 	err := tweetService.PostTweet(id, tweetNoId)
 	if err != nil {

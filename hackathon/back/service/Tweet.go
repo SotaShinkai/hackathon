@@ -5,12 +5,14 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/oklog/ulid"
 	"log"
+	"strconv"
 )
 
 type TweetService struct{}
 
 func (TweetService) PostTweet(id ulid.ULID, tweet model.TweetNoId) error {
-	_, err := db.Exec("INSERT INTO tweet VALUES (?, ?, ?, ?, ?, ?)", id.String(), tweet.UserName, tweet.UserId, tweet.Content, 0, tweet.ReplyId)
+	stringReplyId := strconv.FormatInt(tweet.ReplyId, 10)
+	_, err := db.Exec("INSERT INTO tweet VALUES (?, ?, ?, ?, ?, ?)", id.String(), tweet.UserName, tweet.UserId, tweet.Content, 0, stringReplyId)
 	if err != nil {
 		log.Println("Error inserting tweet", err)
 		return err
