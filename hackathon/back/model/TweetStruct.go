@@ -13,7 +13,7 @@ type TweetNoId struct {
 	UserName string `json:"username"`
 	UserId   string `json:"userId"`
 	Content  string `json:"content"`
-	ReplyId  int64  `json:"replyId"`
+	ReplyId  string `json:"replyId"`
 }
 
 type Id struct {
