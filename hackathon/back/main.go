@@ -11,7 +11,7 @@ func main() {
 	service.InitDatabase()
 	http.HandleFunc("/tweets", controller.Handler)
 
-	log.Println("Listen...")
+	log.Println("Listening...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
 	}
