@@ -3,7 +3,6 @@ package service
 import (
 	"database/sql"
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 )
@@ -12,10 +11,10 @@ var db *sql.DB
 
 func InitDatabase() {
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env, %v", err)
-	}
+	//err := godotenv.Load(".env")
+	//if err != nil {
+	//log.Fatalf("Error loading .env, %v", err)
+	//}
 	// DB接続のための準備
 	mysqlUser := os.Getenv("MYSQL_USER")
 	mysqlPwd := os.Getenv("MYSQL_PASSWORD")

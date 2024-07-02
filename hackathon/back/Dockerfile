@@ -1,4 +1,4 @@
-FROM golang:1.16
+FROM golang:1.21 as build
 
 WORKDIR /app
 
@@ -10,7 +10,14 @@ COPY . .
 
 RUN go build -o main .
 
+FROM ubuntu:latest
+
+WORKDIR /root/
+
+COPY --from=build /app/main .
+
 EXPOSE 8080
 
-CMD ["./main"]
+ENV PORT 8080
 
+CMD ["./main"]
